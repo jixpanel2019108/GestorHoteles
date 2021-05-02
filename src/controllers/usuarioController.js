@@ -72,25 +72,30 @@ function editarUsuario(req, res) {
     delete params.password
 
     if (req.user.rol != 'ROL_USUARIO') return res.status(500).send({ mensaje: 'Esta es una funcion para usuarios' })
-    Usuario.findOne({ _id: req.user.sub }, (err, usuarioEncontrado) => {
-        console.log(usuarioEncontrado);
-        if (err) return res.status(500).send({ mensaje: 'Error al buscar el usuario logeado' })
-        if (params.usuario == '' || params.nombre == '' || params.apellido == '' || params.nacimiento == '' ||
-            params.direccion == '' || params.pais == '' || params.ciudad == '') {
-            return res.status(500).send({ mensaje: 'Tiene que rellenar todos los campos' })
-        }
-        Usuario.findOneAndUpdate({ _id: usuarioEncontrado._id }, {
-            usuario: params.usuario,
-            nombre: params.nombre,
-            apellido: params.apellido,
-            nacimiento: params.nacimiento,
-            direccion: params.direccion,
-            pais: params.pais,
-            ciudad: params.ciudad,
-        }, { new: true, useFindAndModify: false }, (err, usuarioActualizado) => {
-            if (err) return res.status(500).send({ mensaje: 'Error al actualizar usuario' })
-            return res.status(500).send({ usuarioActualizado })
-        })
+    if (params.usuario == '' || params.nombre == '' || params.apellido == '' || params.nacimiento == '' ||
+        params.direccion == '' || params.pais == '' || params.ciudad == '') {
+        return res.status(500).send({ mensaje: 'Tiene que rellenar todos los campos' })
+    }
+    Usuario.findOneAndUpdate({ _id: req.user.sub }, {
+        usuario: params.usuario,
+        nombre: params.nombre,
+        apellido: params.apellido,
+        nacimiento: params.nacimiento,
+        direccion: params.direccion,
+        pais: params.pais,
+        ciudad: params.ciudad,
+    }, { new: true, useFindAndModify: false }, (err, usuarioActualizado) => {
+        if (err) return res.status(500).send({ mensaje: 'Error al actualizar usuario' })
+        return res.status(500).send({ usuarioActualizado })
+    })
+}
+
+function eliminarUsuario(req, res) {
+    if (req.user.rol != 'ROL_USUARIO') return res.status(500).send({ mensaje: 'Esta es una funcion para usuarios' })
+
+    Usuario.findOneAndDelete({ _id: req.user.sub }, (err, usuarioEliminado) => {
+        if (err) return res.status(500).send({ mensaje: 'Error al eliminar el usuario' })
+        return res.status(200).send({ mensaje: 'Su usuario ha sido eliminado con exito' })
     })
 }
 
@@ -98,5 +103,6 @@ function editarUsuario(req, res) {
 module.exports = {
     registrarUsuario,
     editarUsuario,
-    login
+    login,
+    eliminarUsuario
 }
