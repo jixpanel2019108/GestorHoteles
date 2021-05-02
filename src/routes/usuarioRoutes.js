@@ -7,5 +7,6 @@ var md_autenticacion = require('../middlewares/authenticated')
 
 var api = express.Router()
 api.post('/registrarUsuario', usuarioController.registrarUsuario)
-
+api.put('/editarUsuario', md_autenticacion.ensureAuth, usuarioController.editarUsuario)
+api.post('/login', usuarioController.login)
 module.exports = api
