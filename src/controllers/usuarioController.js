@@ -44,6 +44,8 @@ function registrarUsuario(req, res) {
     }
 }
 
+
+
 module.exports = {
     registrarUsuario
 }
