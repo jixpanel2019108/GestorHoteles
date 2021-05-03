@@ -46,7 +46,7 @@ function registrarUsuario(req, res) {
 
 function login(req, res) {
     var params = req.body;
-    Usuario.findOne({ correo: params.correo }, (err, usuarioEncontrado) => {
+    Usuario.findOne({ $or: [{ usuario: params.usuario }, { correo: params.correo }] }, (err, usuarioEncontrado) => {
         if (err) return res.status(500).send({ mensaje: 'Error en la peticion de usuario Usuario' });
         if (usuarioEncontrado) {
             bcrypt.compare(params.password, usuarioEncontrado.password, (err, passCorrecta) => {
