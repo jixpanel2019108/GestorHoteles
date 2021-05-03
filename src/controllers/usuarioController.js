@@ -99,10 +99,20 @@ function eliminarUsuario(req, res) {
     })
 }
 
+function obtenerUsuarios(req, res) {
+    if (req.user.rol != 'ROL_ADMIN') return res.status(500).send({ mensaje: 'Usted no es administrador' })
+    Usuario.find({}, (err, usuariosEncontrados) => {
+        if (err) return res.status(500).send({ mensaje: 'Error al buscar los usuarios' })
+
+        return res.status(200).send({ usuariosEncontrados })
+    })
+}
+
 
 module.exports = {
     registrarUsuario,
     editarUsuario,
     login,
-    eliminarUsuario
+    eliminarUsuario,
+    obtenerUsuarios
 }

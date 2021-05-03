@@ -23,6 +23,7 @@ function registrarHotel(req, res) {
     }
 }
 
+
 module.exports = {
     registrarHotel
 }
