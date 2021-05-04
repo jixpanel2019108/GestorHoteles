@@ -19,12 +19,15 @@ function registrarUsuario(req, res) {
         usuarioModel.pais = params.pais;
         usuarioModel.ciudad = params.ciudad;
 
-        Usuario.find({ $or: [{ usuario: usuarioModel.usuario }, { correo: usuarioModel.correo }] })
-            .exec((err, usuariosEncontrados) => {
-                if (err) return res.status(500).send({ mensaje: 'Error en la peticion de usuario' })
-
-                if (usuariosEncontrados && usuariosEncontrados.length >= 1) {
-                    return res.status(500).send({ mensaje: 'El usuario ya existe' })
+        Usuario.findOne({ usuario: params.usuario }, (err, usuarioUsuario) => {
+            if (err) return res.status(500).send({ mensaje: 'Error al verificar usuario' })
+            if (usuarioUsuario) {
+                return res.status(500).send({ mensaje: 'El nombre de usuario ya esta en uso, utilice otro' })
+            }
+            Usuario.findOne({ correo: params.correo }, (err, usuarioCorreo) => {
+                if (err) return res.status(500).send({ mensaje: 'Error al verificar correo' })
+                if (usuarioCorreo) {
+                    return res.status(500).send({ mensaje: 'El correo ya tiene una cuenta registrada' })
                 } else {
                     bcrypt.hash(params.password, null, null, (err, passEncriptada) => {
                         usuarioModel.password = passEncriptada;
@@ -41,6 +44,7 @@ function registrarUsuario(req, res) {
                     })
                 }
             })
+        })
     }
 }
 
@@ -108,11 +112,47 @@ function obtenerUsuarios(req, res) {
     })
 }
 
+function registrarAdminHotel(req, res) {
+    if (req.user.rol != 'ROL_ADMIN') return res.status(500).send({ mensaje: 'Solo los administradores pueden registrar a admin hotel' })
+    var usuarioModel = new Usuario();
+    var params = req.body;
+    var idHotel = req.params.idHotel
+
+    if (params.usuario == '' || params.correo == '' || params.password == '') {
+        return res.status(500).send({ mensaje: 'Tiene que rellenar todos los campos' })
+    }
+    usuarioModel.usuario = params.usuario;
+    usuarioModel.correo = params.correo;
+    usuarioModel.hotel = idHotel;
+
+    Usuario.findOne({ usuario: params.usuario }, (err, usuarioUsuario) => {
+        if (err) return res.status(500).send({ mensaje: 'Error al consultar en la base de datos' })
+        if (usuarioUsuario) return res.status(500).send({ mensaje: 'El usuario ya esta en uso' })
+        Usuario.findOne({ correo: params.correo }, (err, usuarioCorreo) => {
+            if (err) return res.status(500).send({ mensaje: 'Error al consultar en la base de datos' })
+            if (usuarioCorreo) return res.status(500).send({ mensaje: 'El correo ya esta en uso' })
+
+            bcrypt.hash(params.password, null, null, (err, passwordEncriptada) => {
+                usuarioModel.password = passwordEncriptada;
+
+                usuarioModel.save((err, usuarioGuardado) => {
+                    if (err) return res.status(500).send({ mensaje: 'Error al guardar' })
+
+                    if (!usuarioGuardado) return res.status(500).send({ mensaje: 'No se ha podido registrar el usuario' })
+
+                    return res.status(200).send({ usuarioGuardado })
+                })
+            })
+        })
+    })
+
+}
 
 module.exports = {
     registrarUsuario,
     editarUsuario,
     login,
     eliminarUsuario,
-    obtenerUsuarios
+    obtenerUsuarios,
+    registrarAdminHotel
 }

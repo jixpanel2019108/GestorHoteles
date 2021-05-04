@@ -11,7 +11,8 @@ var UsuarioSchema = Schema({
     nacimiento: String,
     direccion: String,
     pais: String,
-    ciudad: String
+    ciudad: String,
+    hotel: { type: Schema.Types.ObjectId, ref: 'hoteles' }
 })
 
 module.exports = mongoose.model('usuarios', UsuarioSchema);
