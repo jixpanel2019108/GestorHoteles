@@ -28,6 +28,28 @@ function registrarHabitacion(req, res) {
 
 }
 
+function obtenerHabitaciones(req, res) {
+    Habitacion.find({}, (err, habitacionesEncontradas) => {
+        if (err) return res.status(500).send({ mensaje: 'Error al obtener habitaciones' })
+        if (!habitacionesEncontradas) return res.status(500).send({ mensaje: 'No existen habitaciones' })
+
+        return res.status(200).send({ habitacionesEncontradas })
+    })
+}
+
+function obtenerHabitacionesPorHotel(req, res) {
+    var idHotel = req.params.idHotel
+
+    Habitacion.find({ hotel: idHotel }, (err, habitacionesEncontradas) => {
+        if (err) return res.status(500).send({ mensaje: 'Error al buscar las habitaciones' })
+        if (!habitacionesEncontradas) return res.status(200).send({ mensaje: 'Este hotel aun no tiene habitaciones' })
+
+        return res.status(200).send({ habitacionesEncontradas })
+    })
+}
+
 module.exports = {
-    registrarHabitacion
+    registrarHabitacion,
+    obtenerHabitaciones,
+    obtenerHabitacionesPorHotel
 }

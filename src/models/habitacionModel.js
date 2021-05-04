@@ -9,4 +9,4 @@ var HabitacionSchema = Schema({
     hotel: { type: Schema.Types.ObjectId, ref: 'hoteles' }
 })
 
-module.exports = mongoose.model('holaaaas', HabitacionSchema)
+module.exports = mongoose.model('habitaciones', HabitacionSchema)

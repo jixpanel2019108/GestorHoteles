@@ -148,6 +148,8 @@ function registrarAdminHotel(req, res) {
 
 }
 
+
+
 module.exports = {
     registrarUsuario,
     editarUsuario,
