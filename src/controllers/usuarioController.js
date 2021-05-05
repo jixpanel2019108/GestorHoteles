@@ -123,6 +123,7 @@ function registrarAdminHotel(req, res) {
     }
     usuarioModel.usuario = params.usuario;
     usuarioModel.correo = params.correo;
+    usuarioModel.rol = 'ROL_ADMIN_HOTEL'
     usuarioModel.hotel = idHotel;
 
     Usuario.findOne({ usuario: params.usuario }, (err, usuarioUsuario) => {
