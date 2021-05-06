@@ -3,6 +3,7 @@ const Habitacion = require('../models/habitacionModel');
 const bcrypt = require('bcrypt-nodejs');
 
 function registrarHabitacion(req, res) {
+    if (req.user.rol != 'ROL_ADMIN') return res.status(500).send({ mensaje: 'Solo los administradores pueden registrar' })
     var habitacionModel = new Habitacion();
     var params = req.body;
     var idHotel = req.params.idHotel;
@@ -38,6 +39,7 @@ function obtenerHabitaciones(req, res) {
 }
 
 function obtenerHabitacionesPorHotel(req, res) {
+    if (req.user.rol != 'ROL_USUARIO') return res.status(500).send({ mensaje: 'esta funcion es para usuario' })
     var idHotel = req.params.idHotel
 
     Habitacion.find({ hotel: idHotel }, (err, habitacionesEncontradas) => {

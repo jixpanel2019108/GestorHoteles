@@ -5,7 +5,10 @@ const md_autenticacion = require('../middlewares/authenticated')
 
 
 var api = express.Router()
-api.post('/registrarEvento/:idHotel/:idTipoEvento', md_autenticacion.ensureAuth, eventoController.registrarEvento)
+api.post('/registrarEvento/:idHotel/:idTipoEvento', md_autenticacion.ensureAuth, eventoController.registrarEvento);
+api.get('/obtenerEventosHotel/:idHotel', md_autenticacion.ensureAuth, eventoController.obtenerEventosHotel);
+api.get('/obtenerEventosCategorias/:idHotel/:idTipo', md_autenticacion.ensureAuth, eventoController.obtenerEventosCategorias)
+
 
 module.exports = api
 

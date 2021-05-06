@@ -75,7 +75,6 @@ function editarUsuario(req, res) {
     var params = req.body
     delete params.password
 
-    if (req.user.rol != 'ROL_USUARIO') return res.status(500).send({ mensaje: 'Esta es una funcion para usuarios' })
     if (params.usuario == '' || params.nombre == '' || params.apellido == '' || params.nacimiento == '' ||
         params.direccion == '' || params.pais == '' || params.ciudad == '') {
         return res.status(500).send({ mensaje: 'Tiene que rellenar todos los campos' })
@@ -95,8 +94,6 @@ function editarUsuario(req, res) {
 }
 
 function eliminarUsuario(req, res) {
-    if (req.user.rol != 'ROL_USUARIO') return res.status(500).send({ mensaje: 'Esta es una funcion para usuarios' })
-
     Usuario.findOneAndDelete({ _id: req.user.sub }, (err, usuarioEliminado) => {
         if (err) return res.status(500).send({ mensaje: 'Error al eliminar el usuario' })
         return res.status(200).send({ mensaje: 'Su usuario ha sido eliminado con exito' })

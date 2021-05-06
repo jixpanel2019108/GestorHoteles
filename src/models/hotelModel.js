@@ -7,7 +7,8 @@ var HotelSchema = Schema({
     nombre: String,
     pais: String,
     puntuacion: Number,
-    direccion: String
+    direccion: String,
+    contador: Number
 })
 
 module.exports = mongoose.model('hoteles', HotelSchema);
