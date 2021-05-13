@@ -12,6 +12,7 @@ var UsuarioSchema = Schema({
     direccion: String,
     pais: String,
     ciudad: String,
+    imagen: String,
     hotel: { type: Schema.Types.ObjectId, ref: 'hoteles' }
 })
 

@@ -50,7 +50,7 @@ function registrarUsuario(req, res) {
 
 function login(req, res) {
     var params = req.body;
-    Usuario.findOne({ $or: [{ usuario: params.usuario }, { correo: params.correo }] }, (err, usuarioEncontrado) => {
+    Usuario.findOne({ usuario: params.usuario }, (err, usuarioEncontrado) => {
         if (err) return res.status(500).send({ mensaje: 'Error en la peticion de usuario Usuario' });
         if (usuarioEncontrado) {
             bcrypt.compare(params.password, usuarioEncontrado.password, (err, passCorrecta) => {
@@ -101,7 +101,7 @@ function eliminarUsuario(req, res) {
 }
 
 function obtenerUsuarios(req, res) {
-    if (req.user.rol != 'ROL_ADMIN') return res.status(500).send({ mensaje: 'Usted no es administrador' })
+    // if (req.user.rol != 'ROL_ADMIN') return res.status(500).send({ mensaje: 'Usted no es administrador' })
     Usuario.find({}, (err, usuariosEncontrados) => {
         if (err) return res.status(500).send({ mensaje: 'Error al buscar los usuarios' })
 
@@ -122,7 +122,7 @@ function registrarAdminHotel(req, res) {
     usuarioModel.correo = params.correo;
     usuarioModel.rol = 'ROL_ADMIN_HOTEL'
     usuarioModel.hotel = idHotel;
-
+    //TODO: hacer una busqueda para el hotel, para buscar el nombre asi agregarselo al nombre de usuario
     Usuario.findOne({ usuario: params.usuario }, (err, usuarioUsuario) => {
         if (err) return res.status(500).send({ mensaje: 'Error al consultar en la base de datos' })
         if (usuarioUsuario) return res.status(500).send({ mensaje: 'El usuario ya esta en uso' })
