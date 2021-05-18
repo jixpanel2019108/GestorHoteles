@@ -4,14 +4,12 @@ const Evento = require('../models/eventoModel')
 function registrarEvento(req, res) {
     if (req.user.rol != 'ROL_ADMIN') return res.status(500).send({ mensaje: 'Solo los administradores pueden registrar' })
     var eventoModel = new Evento();
-    var idTipoEvento = req.params.idTipoEvento;
-    var idHotel = req.params.idHotel;
     var params = req.body;
 
     eventoModel.evento = params.evento;
     eventoModel.fecha = params.fecha;
-    eventoModel.tipoEvento = idTipoEvento;
-    eventoModel.hotel = idHotel;
+    eventoModel.tipoEvento = params.tipoEvento;
+    eventoModel.hotel = params.hotel;
 
     if (params.evento == '' || params.fecha == '') return res.status(500).send({ mensaje: 'Debe rellenar todos los campos' })
     eventoModel.save((err, eventoGuardado) => {
@@ -46,6 +44,7 @@ function obtenerEventosCategorias(req, res) {
         return res.status(200).send({ eventosEncontrados })
     })
 }
+
 module.exports = {
     registrarEvento,
     obtenerEventosHotel,

@@ -55,7 +55,17 @@ function registrarHotel(req, res) {
     })
 }
 
+function obtenerHoteles(req, res) {
+    Hotel.find({}, (err, hotelesEncontrados) => {
+        if (err) return res.status(500).send({ mensaje: 'Error al buscar los hoteles' })
+        if (!hotelesEncontrados) return res.status(500).send({ mensaje: 'No existen hoteles' })
+
+        return res.status(200).send({ hotelesEncontrados })
+    })
+}
+
 
 module.exports = {
-    registrarHotel
+    registrarHotel,
+    obtenerHoteles
 }

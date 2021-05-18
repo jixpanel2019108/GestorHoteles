@@ -8,7 +8,7 @@ var UsuarioSchema = Schema({
     rol: String,
     nombre: String,
     apellido: String,
-    nacimiento: String,
+    nacimiento: Date,
     direccion: String,
     pais: String,
     ciudad: String,
