@@ -4,7 +4,7 @@ var Schema = mongoose.Schema;
 var HabitacionSchema = Schema({
     tipo: String,
     nombre: String,
-    precio: Number,
+    precio: String,
     estado: String,
     hotel: { type: Schema.Types.ObjectId, ref: 'hoteles' }
 })

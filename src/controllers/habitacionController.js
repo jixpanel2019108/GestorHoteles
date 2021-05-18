@@ -6,7 +6,6 @@ function registrarHabitacion(req, res) {
     if (req.user.rol != 'ROL_ADMIN') return res.status(500).send({ mensaje: 'Solo los administradores pueden registrar' })
     var habitacionModel = new Habitacion();
     var params = req.body;
-    var idHotel = req.params.idHotel;
 
     if (params.tipo == "" || params.nombre == "" || params.precio == "") {
         return res.status(500).send({ mensaje: 'Tiene que rellenar todos los campos' })
@@ -15,9 +14,9 @@ function registrarHabitacion(req, res) {
     habitacionModel.tipo = params.tipo;
     habitacionModel.nombre = params.nombre;
     habitacionModel.precio = params.precio;
-    habitacionModel.hotel = idHotel;
+    habitacionModel.hotel = params.hotel;
 
-    Habitacion.findOne({ tipo: params.tipo, nombre: params.nombre, precio: params.precio, hotel: idHotel }, (err, habitacionEncontrada) => {
+    Habitacion.findOne({ tipo: params.tipo, nombre: params.nombre, precio: params.precio, hotel: params.hotel }, (err, habitacionEncontrada) => {
         if (habitacionEncontrada) return res.status(500).send({ mensaje: 'Esta habitacion ya existe' });
 
         habitacionModel.save((err, habitacionGuardada) => {
