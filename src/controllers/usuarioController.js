@@ -1,7 +1,9 @@
 'use strict'
 const Usuario = require('../models/usuarioModel');
+const Reservacion = require('../models/reservacionModel')
 const bcrypt = require('bcrypt-nodejs');
-const jwt = require('../services/jwt')
+const jwt = require('../services/jwt');
+const reservacionModel = require('../models/reservacionModel');
 
 function registrarUsuario(req, res) {
     var usuarioModel = new Usuario();
@@ -37,6 +39,7 @@ function registrarUsuario(req, res) {
                             if (err) return res.status(500).send({ mensaje: 'Error al guardar usuario' })
 
                             if (usuarioGuardado) {
+                                crearReservacion(usuarioGuardado._id)
                                 res.status(200).send(usuarioGuardado)
                             } else {
                                 res.status(500).send({ mensaje: 'No se ha podido registrar el usuario' })
@@ -47,6 +50,29 @@ function registrarUsuario(req, res) {
             })
         })
     }
+}
+
+function crearReservacion(idUsuario){
+    let reservacionModel = new Reservacion()
+    // reservacionModel.idHabitacion = ''
+    reservacionModel.checkIn = new Date()
+    reservacionModel.checkOut = new Date()
+    reservacionModel.precio = 0
+    reservacionModel.noches = 0
+    reservacionModel.servicios= [],
+    reservacionModel.usuario = idUsuario
+    reservacionModel.nombrePersona = ''
+    reservacionModel.apellidoPersona =  ''
+    reservacionModel.correoPersona =  ''
+    reservacionModel.telefonoPersona =  ''
+    reservacionModel.nombreTarjeta = ''
+    reservacionModel.numeroTarjetoa = ''
+    reservacionModel.exp =  ''
+    reservacionModel.cvv =  ''
+    reservacionModel.fecha =  new Date()
+    reservacionModel.total =  0
+
+    reservacionModel.save()
 }
 
 function login(req, res) {
