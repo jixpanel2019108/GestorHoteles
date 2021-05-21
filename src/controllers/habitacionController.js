@@ -38,7 +38,7 @@ function obtenerHabitaciones(req, res) {
 }
 
 function obtenerHabitacionesPorHotel(req, res) {
-    if (req.user.rol != 'ROL_USUARIO') return res.status(500).send({ mensaje: 'esta funcion es para usuario' })
+    // if (req.user.rol != 'ROL_USUARIO') return res.status(500).send({ mensaje: 'esta funcion es para usuario' })
     var idHotel = req.params.idHotel
 
     Habitacion.find({ hotel: idHotel }, (err, habitacionesEncontradas) => {

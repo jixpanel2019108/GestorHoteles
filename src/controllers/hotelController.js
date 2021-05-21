@@ -64,8 +64,19 @@ function obtenerHoteles(req, res) {
     })
 }
 
+function obtenerHotelesPais(req,res){
+    let idPais = req.params.idPais
+    Hotel.find({pais: idPais},(err,hotelesEncontrados)=>{
+        if (err) return res.status(500).send({ mensaje: 'Error al buscar los hoteles' })
+        if (!hotelesEncontrados) return res.status(500).send({ mensaje: 'No se encontró ningun hotel en el país' })
+        
+        return res.status(200).send({hotelesEncontrados})
+    })
+}
+
 
 module.exports = {
     registrarHotel,
-    obtenerHoteles
+    obtenerHoteles,
+    obtenerHotelesPais
 }

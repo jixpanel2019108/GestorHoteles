@@ -16,6 +16,7 @@ function registrarUsuario(req, res) {
         usuarioModel.apellido = params.apellido;
         usuarioModel.nacimiento = params.nacimiento;
         usuarioModel.direccion = params.direccion;
+        usuarioModel.telefono = params.telefono;
         usuarioModel.pais = params.pais;
         usuarioModel.ciudad = params.ciudad;
 

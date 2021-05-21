@@ -6,6 +6,8 @@ var HabitacionSchema = Schema({
     nombre: String,
     precio: String,
     estado: String,
+    diasReservados: [{checkIn: Date,
+            checkOut: Date}],
     hotel: { type: Schema.Types.ObjectId, ref: 'hoteles' }
 })
 
