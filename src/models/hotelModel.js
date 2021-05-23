@@ -10,6 +10,7 @@ var HotelSchema = Schema({
     puntuacion: Number,
     direccion: String,
     contador: Number,
+    habitaciones: Boolean,
     imagen: String
 })
 

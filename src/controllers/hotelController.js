@@ -21,6 +21,7 @@ function registrarHotel(req, res) {
     hotelModel.pais = params.pais;
     hotelModel.ciudad = params.ciudad;
     hotelModel.direccion = params.direccion;
+    hotelModel.habitaciones = false
 
     usuarioModel.usuario = params.usuario;
     usuarioModel.correo = params.correo;
@@ -66,7 +67,7 @@ function obtenerHoteles(req, res) {
 
 function obtenerHotelesPais(req,res){
     let idPais = req.params.idPais
-    Hotel.find({pais: idPais},(err,hotelesEncontrados)=>{
+    Hotel.find({pais: idPais, habitaciones: true},(err,hotelesEncontrados)=>{
         if (err) return res.status(500).send({ mensaje: 'Error al buscar los hoteles' })
         if (!hotelesEncontrados) return res.status(500).send({ mensaje: 'No se encontró ningun hotel en el país' })
         

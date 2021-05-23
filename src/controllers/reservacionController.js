@@ -1,5 +1,6 @@
 'use strict'
 const Reservacion = require('../models/reservacionModel')
+const Habitacion = require('../models/habitacionModel')
 
 function reservar(req,res){
 
@@ -15,6 +16,7 @@ function agregarChekInOut(req,res){
         if (err) return res.status(500).send({mensaje:'Error al actualizar reservacion'})
         if (!reservacionActualizada) return res.status(500).send({mensaje:'No se actualizó'})
 
+        
         return res.status(200).send({reservacionActualizada})
     })
 }
