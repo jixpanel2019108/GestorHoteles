@@ -20,7 +20,7 @@ var ReservacionSchema = Schema({
     correoPersona: String,
     telefonoPersona: String,
     nombreTarjeta:String,
-    numeroTarjetoa:String,
+    numeroTarjeta:String,
     exp: String,
     cvv: String,
     fecha: Date,

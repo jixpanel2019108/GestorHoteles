@@ -9,6 +9,8 @@ var api = express.Router()
     // api.post('/registrarHotel', md_autenticacion.ensureAuth, hotelController)
 api.post('/registrarHotel', md_autenticacion.ensureAuth, hotelController.registrarHotel);
 api.get('/obtenerHoteles',hotelController.obtenerHoteles) 
+api.get('/obtenerHotelesAll',hotelController.obtenerHotelesAll) 
 api.get('/obtenerHotelesPais/:idPais',hotelController.obtenerHotelesPais) 
+api.post('/obtenerHotelNombre', md_autenticacion.ensureAuth,hotelController.obtenerHotelNombre) 
 
 module.exports = api;

@@ -62,6 +62,15 @@ function obtenerHoteles(req, res) {
         if (!hotelesEncontrados) return res.status(500).send({ mensaje: 'No existen hoteles' })
 
         return res.status(200).send({ hotelesEncontrados })
+    }).distinct('pais')
+}
+
+function obtenerHotelesAll(req, res) {
+    Hotel.find({}, (err, hotelesEncontrados) => {
+        if (err) return res.status(500).send({ mensaje: 'Error al buscar los hoteles' })
+        if (!hotelesEncontrados) return res.status(500).send({ mensaje: 'No existen hoteles' })
+
+        return res.status(200).send({ hotelesEncontrados })
     })
 }
 
@@ -75,9 +84,22 @@ function obtenerHotelesPais(req,res){
     })
 }
 
+function obtenerHotelNombre(req,res){
+    let params = req.body
+    
+    Hotel.findOne({nombre: params.nombre},(err, hotelObtenido) => {
+        if (err) return res.status(500).send({ mensaje: 'Error al buscar el hotele' })
+        if (!hotelObtenido) return res.status(500).send({ mensaje: 'No existen hoteles' })
+
+        return res.status(200).send({hotelObtenido})
+    })
+}
+
 
 module.exports = {
     registrarHotel,
     obtenerHoteles,
-    obtenerHotelesPais
+    obtenerHotelesPais,
+    obtenerHotelNombre,
+    obtenerHotelesAll
 }

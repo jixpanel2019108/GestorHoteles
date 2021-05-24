@@ -18,7 +18,8 @@ function registrarHabitacion(req, res) {
     habitacionModel.precio = params.precio;
     habitacionModel.hotel = params.hotel;
     habitacionModel.estado = true;
-    habitacionModel.diasReservados = [{checkIn: 0,checkOut: 0}],
+    habitacionModel.diasReservados = [{checkIn: new Date('1988-03-21'),checkOut: new Date('1988-03-21')}],
+
 
     Habitacion.findOne({ tipo: params.tipo, nombre: params.nombre, precio: params.precio, hotel: params.hotel }, (err, habitacionEncontrada) => {
         if (habitacionEncontrada) return res.status(500).send({ mensaje: 'Esta habitacion ya existe' });
@@ -51,6 +52,7 @@ function obtenerHabitaciones(req, res) {
     })
 }
 
+
 function obtenerHabitacionesPorHotel(req, res) {
     // if (req.user.rol != 'ROL_USUARIO') return res.status(500).send({ mensaje: 'esta funcion es para usuario' })
     var idHotel = req.params.idHotel
@@ -70,38 +72,39 @@ function obtenerHabitacionesPorHotel(req, res) {
             })
         })
 
+        let checkInInicializado = new Date('1988-03-21')
+        let checkOutInicializado = new Date('1988-03-21')
+
         Reservacion.findOne({usuario:req.user.sub},(err, reservacionEncontrada)=>{
             if(err) return res.status(500).send({mensaje:'Error al buscar reservacion en Habitaciones'})
 
             habitacionesEncontradas.forEach(function callback(habitacion){
                 habitacion.diasReservados.forEach(function callback(diasReservados){
-                    console.log(reservacionEncontrada.checkOut);
-                    console.log(reservacionEncontrada.checkOut.getTime());
-                    if (diasReservados.checkIn == 0 && diasReservados.checkOut == 0){
-                        console.log('Disponibilidad True');
-
-                    }else if(reservacionEncontrada.checkIn.getTime() >= diasReservados.checkIn && reservacionEncontrada.checkIn.getTime() < diasReservados.checkOut){
+                    
+                    if(reservacionEncontrada.checkIn >= diasReservados.checkIn && reservacionEncontrada.checkIn < diasReservados.checkOut){
                         console.log('Disponibilidad Falsa');
                         Habitacion.findOneAndUpdate({_id: habitacion._id},{estado:false},{ new: true, useFindAndModify: false },(err,habitacionActualizada)=>{
                             if (err) return res.status(500).send({ mensaje: 'No funciono el forEach' })
                             if (!habitacionActualizada) return res.status(500).send({mensaje:'habitacionActualizada Vacio'})
+                            console.log({checkIn: habitacionActualizada});
                         })
 
-                    }else if(reservacionEncontrada.checkOut.getTime() > diasReservados.checkIn && reservacionEncontrada.checkOut.getTime() < diasReservados.checkOut){
+                    }else if(reservacionEncontrada.checkOut > diasReservados.checkIn && reservacionEncontrada.checkOut < diasReservados.checkOut){
                         console.log('Disponibilidad Falsa');
                         Habitacion.findOneAndUpdate({_id: habitacion._id},{estado:false},{ new: true, useFindAndModify: false },(err,habitacionActualizada)=>{
                             if (err) return res.status(500).send({ mensaje: 'No funciono el forEach' })
                             if (!habitacionActualizada) return res.status(500).send({mensaje:'habitacionActualizada Vacio'})
+                            console.log({checkout: habitacionActualizada});
+
                         })
                         
                     }else{
-                        console.log('Disponibilidad true');
+                        console.log('Disponibilidad hola');
                     }
                 })
             })
-        })
 
-        Habitacion.find({ hotel: idHotel, estado: true },(err,habitacionesEncontradas2)=>{
+            Habitacion.find({ hotel: idHotel, estado: true },(err,habitacionesEncontradas2)=>{
             if (err) return res.status(500).send({ mensaje: 'Error al buscar las habitaciones' })
             if (!habitacionesEncontradas) return res.status(200).send({ mensaje: 'Este hotel no tiene habitaciones Disponibles' })
 
@@ -109,6 +112,32 @@ function obtenerHabitacionesPorHotel(req, res) {
             return res.status(200).send({ habitacionesEncontradas2 })
         })
 
+        })
+
+        
+
+    })
+}
+
+function obtenerHabitacionesTrue(req,res){
+    let idHotel = req.params.idHotel
+    Habitacion.find({ hotel: idHotel, estado: true },(err,habitacionesTrue)=>{
+        if (err) return res.status(500).send({ mensaje: 'Error al buscar las habitaciones' })
+        if (!habitacionesTrue) return res.status(200).send({ mensaje: 'Este hotel no tiene habitaciones Disponibles' })
+
+        // console.log(habitacionesTrue);
+        return res.status(200).send({ habitacionesTrue })
+    })
+}
+
+function obtenerHabitacionId(req,res){
+    let idHabitacion = req.params.idHabitacion;
+    
+    Habitacion.findById(idHabitacion,(err,habitacionEncontrada) => {
+        if (err) res.status(500).send({mensaje: 'Error al hacer la busqueda de habitaciones'})
+        if (!habitacionEncontrada) res.status(500).send({mensaje:'No se encontro ninguna habitación'})
+
+        return res.status(200).send({habitacionEncontrada})
     })
 }
 
@@ -119,5 +148,7 @@ function obtenerHabitacionesPorHotel(req, res) {
 module.exports = {
     registrarHabitacion,
     obtenerHabitaciones,
-    obtenerHabitacionesPorHotel
+    obtenerHabitacionesPorHotel,
+    obtenerHabitacionId,
+    obtenerHabitacionesTrue
 }
