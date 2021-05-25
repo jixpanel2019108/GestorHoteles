@@ -12,4 +12,9 @@ api.post('/login', usuarioController.login)
 api.delete('/eliminarUsuario', md_autenticacion.ensureAuth, usuarioController.eliminarUsuario)
 api.get('/obtenerUsuarios', usuarioController.obtenerUsuarios)
 api.post('/registrarAdminHotel/:idHotel', md_autenticacion.ensureAuth, usuarioController.registrarAdminHotel)
+api.get('/adminObtenerUsuario', md_autenticacion.ensureAuth, usuarioController.adminObtenerUsuario)
+api.get('/obtenerUsuarioId/:idUsuario', usuarioController.obtenerUsuarioId)
+api.put('/adminEditarUsuario/:idUsuario', md_autenticacion.ensureAuth, usuarioController.adminEditarUsuario);
+api.delete('/adminEliminarUsuario/:idUsuario', md_autenticacion.ensureAuth, usuarioController.adminEliminarUsuario)
+
 module.exports = api

@@ -12,5 +12,6 @@ api.get('/obtenerHoteles',hotelController.obtenerHoteles)
 api.get('/obtenerHotelesAll',hotelController.obtenerHotelesAll) 
 api.get('/obtenerHotelesPais/:idPais',hotelController.obtenerHotelesPais) 
 api.post('/obtenerHotelNombre', md_autenticacion.ensureAuth,hotelController.obtenerHotelNombre) 
+api.get('/obtenerHotelId/:idHotel', md_autenticacion.ensureAuth, hotelController.obtenerHotelId)
 
 module.exports = api;

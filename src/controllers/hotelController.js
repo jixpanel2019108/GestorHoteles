@@ -95,11 +95,22 @@ function obtenerHotelNombre(req,res){
     })
 }
 
+function obtenerHotelId(req,res){
+    let idHotel = req.params.idHotel
+
+    Hotel.findOne({_id:idHotel}, (err, hotelEncontrado)=> {
+        if (err) return res.status(500).send({ mensaje: 'Error al buscar el hotel' })
+        if (!hotelEncontrado) return res.status(500).send({ mensaje: 'No existen hoteles' })
+
+        return res.status(200).send({hotelEncontrado})
+    })
+}
 
 module.exports = {
     registrarHotel,
     obtenerHoteles,
     obtenerHotelesPais,
     obtenerHotelNombre,
-    obtenerHotelesAll
+    obtenerHotelesAll,
+    obtenerHotelId
 }

@@ -45,8 +45,20 @@ function obtenerEventosCategorias(req, res) {
     })
 }
 
+function obtenerEventosIdHotel(req,res){
+    let idHotel = req.params.idHotel
+
+    Evento.find({hotel: idHotel},(err, eventosEncontrados) => {
+        if (err) return res.status(500).send({ mensaje: 'Error al hacer la consulta' })
+        if (!eventosEncontrados) return res.status(500).send({ mensaje: 'No se ha encontrado ningun evento' })
+
+        return res.status(200).send({eventosEncontrados})
+    })
+}
+
 module.exports = {
     registrarEvento,
     obtenerEventosHotel,
-    obtenerEventosCategorias
+    obtenerEventosCategorias,
+    obtenerEventosIdHotel
 }

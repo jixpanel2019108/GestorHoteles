@@ -173,7 +173,57 @@ function registrarAdminHotel(req, res) {
 
 }
 
+function adminObtenerUsuario(req,res){
+    if (req.user.rol != 'ROL_ADMIN') return res.status(500).send({ mensaje: 'Usted no es administrador' })
+    Usuario.find({}, (err, usuariosEncontrados) => {
+        if (err) return res.status(500).send({ mensaje: 'Error al buscar los usuarios' })
 
+        return res.status(200).send({ usuariosEncontrados })
+    }).sort({'rol':1})
+}
+
+function obtenerUsuarioId(req, res) {
+    var idUsuario = req.params.idUsuario
+
+    Usuario.findById(idUsuario, (err, usuarioEncontrado) => {
+        if (err) return res.status(500).send({ mensaje: 'Error en la peticion del usuario' })
+        if (!usuarioEncontrado) return res.status(500).send({ mensaje: 'Error en obtener los datos' })
+        // console.log(usuarioEncontrado.correo) //como es objeto por medio del . entro a sus propiedades
+        return res.status(200).send({ usuarioEncontrado })
+    })
+}
+
+function adminEditarUsuario(req, res) {
+    var idUsuario = req.params.idUsuario;
+    var params = req.body
+
+    //BORRAR LA PROPIEDAD DE PASSWORD PARA QUE NO SE PUEDA EDITAR
+    delete params.password;
+
+    //req.user.sub <--- id Usuario logeado
+    if (req.user.rol != 'ROL_ADMIN') {
+        return res.status(500).send({ mensaje: 'Solo el administrador puede editar.' })
+    }
+    //Modelo.find
+    Usuario.findByIdAndUpdate(idUsuario, params, { new: true }, (err, usuarioActualizado) => {
+        if (err) return res.status(500).send({ mensaje: 'Error en la peticion' });
+        if (!usuarioActualizado) return res.status(500).send({ mensaje: 'No se ha podido actualizar Usuario' });
+        //usuarioActualizado.password = undefined;
+        return res.status(200).send({ usuarioActualizado })
+    })
+}
+
+function adminEliminarUsuario(req, res) {
+    const idUsuario = req.params.idUsuario;
+
+    if (req.user.rol != 'ROL_ADMIN') return res.status(500).send({ mensaje: 'Solo puede eliminar el Administrador' })
+    Usuario.findByIdAndDelete(idUsuario, (err, usuarioEliminado) => {
+        if (err) return res.status(500).send({ mensaje: 'Error en la peticion de eliminar' })
+        if (!usuarioEliminado) return res.status(500).send({ mensaje: 'Error al eliminar el usuario' })
+
+        return res.status(200).send({ usuarioEliminado });
+    })
+}
 
 module.exports = {
     registrarUsuario,
@@ -181,5 +231,9 @@ module.exports = {
     login,
     eliminarUsuario,
     obtenerUsuarios,
-    registrarAdminHotel
+    registrarAdminHotel,
+    adminObtenerUsuario,
+    obtenerUsuarioId,
+    adminEditarUsuario,
+    adminEliminarUsuario
 }
