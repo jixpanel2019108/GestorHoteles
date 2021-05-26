@@ -106,11 +106,51 @@ function obtenerHotelId(req,res){
     })
 }
 
+function adminObtenerHoteles(req,res){
+    if (req.user.rol != 'ROL_ADMIN') return res.status(500).send({ mensaje: 'Usted no es administrador' })
+    Hotel.find({}, (err, hotelesEncontrados) => {
+        if (err) return res.status(500).send({ mensaje: 'Error al buscar los hoteles' })
+
+        return res.status(200).send({ hotelesEncontrados })
+    })
+}
+
+function adminEditarHotel(req, res) {
+    var idHotel = req.params.idHotel;
+    var params = req.body
+
+    if (req.user.rol != 'ROL_ADMIN') {
+        return res.status(500).send({ mensaje: 'Solo el administrador puede editar.' })
+    }
+
+    Hotel.findByIdAndUpdate(idHotel, params, { new: true }, (err, hotelActualizado) => {
+        if (err) return res.status(500).send({ mensaje: 'Error en la peticion' });
+        if (!hotelActualizado) return res.status(500).send({ mensaje: 'No se ha podido actualizar Usuario' });
+
+        return res.status(200).send({ hotelActualizado })
+    })
+}
+
+function adminEliminarHotel(req, res) {
+    const idHotel = req.params.idHotel;
+
+    if (req.user.rol != 'ROL_ADMIN') return res.status(500).send({ mensaje: 'Solo puede eliminar el Administrador' })
+    Hotel.findByIdAndDelete(idHotel, (err, hotelEliminado) => {
+        if (err) return res.status(500).send({ mensaje: 'Error en la peticion de eliminar' })
+        if (!hotelEliminado) return res.status(500).send({ mensaje: 'Error al eliminar el hotel' })
+
+        return res.status(200).send({ hotelEliminado });
+    })
+}
+
 module.exports = {
     registrarHotel,
     obtenerHoteles,
     obtenerHotelesPais,
     obtenerHotelNombre,
     obtenerHotelesAll,
-    obtenerHotelId
+    obtenerHotelId,
+    adminObtenerHoteles,
+    adminEditarHotel,
+    adminEliminarHotel
 }

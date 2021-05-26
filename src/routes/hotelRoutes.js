@@ -13,5 +13,8 @@ api.get('/obtenerHotelesAll',hotelController.obtenerHotelesAll)
 api.get('/obtenerHotelesPais/:idPais',hotelController.obtenerHotelesPais) 
 api.post('/obtenerHotelNombre', md_autenticacion.ensureAuth,hotelController.obtenerHotelNombre) 
 api.get('/obtenerHotelId/:idHotel', md_autenticacion.ensureAuth, hotelController.obtenerHotelId)
+api.get('/adminObtenerHoteles', md_autenticacion.ensureAuth, hotelController.adminObtenerHoteles)
+api.put('/adminEditarHotel/:idHotel', md_autenticacion.ensureAuth, hotelController.adminEditarHotel)
+api.delete('/adminEliminarHotel/:idHotel', md_autenticacion.ensureAuth, hotelController.adminEliminarHotel)
 
 module.exports = api;

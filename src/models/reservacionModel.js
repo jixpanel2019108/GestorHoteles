@@ -11,6 +11,7 @@ var ReservacionSchema = Schema({
     noches: Number,
     servicios:[{
         nombre: String,
+        precio: Number,
         cantidad: Number,
         idServicio: {type: Schema.ObjectId, ref: 'servicios'}
     }],
