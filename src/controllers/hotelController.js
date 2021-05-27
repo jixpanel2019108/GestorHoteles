@@ -22,6 +22,7 @@ function registrarHotel(req, res) {
     hotelModel.ciudad = params.ciudad;
     hotelModel.direccion = params.direccion;
     hotelModel.habitaciones = false
+    hotelModel.imagen = params.imagen
 
     usuarioModel.usuario = params.usuario;
     usuarioModel.correo = params.correo;
@@ -123,7 +124,7 @@ function adminEditarHotel(req, res) {
         return res.status(500).send({ mensaje: 'Solo el administrador puede editar.' })
     }
 
-    Hotel.findByIdAndUpdate(idHotel, params, { new: true }, (err, hotelActualizado) => {
+    Hotel.findByIdAndUpdate(idHotel, {nombre: params.nombre,pais: params.pais,ciudad: params.ciudad,direccion: params.direccion}, { new: true }, (err, hotelActualizado) => {
         if (err) return res.status(500).send({ mensaje: 'Error en la peticion' });
         if (!hotelActualizado) return res.status(500).send({ mensaje: 'No se ha podido actualizar Usuario' });
 

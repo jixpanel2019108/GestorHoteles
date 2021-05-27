@@ -2,6 +2,8 @@
 const Reservacion = require('../models/reservacionModel')
 const Habitacion = require('../models/habitacionModel')
 const Servicio = require('../models/servicioModel')
+const Factura = require('../models/facturaModel')
+const Hotel = require('../models/hotelModel')
 var moment = require('moment'); 
 
 function reservarHabitacion(req,res){
@@ -46,8 +48,6 @@ function reservarHabitacion(req,res){
             //TODO: FALTA AGREGAR EL CHECKIN Y OUT A HABITACION CUANDO YA SE HAYA RESERVADO
     })
 }
-
-
 
 function agregarChekInOut(req,res){
     let reservacionModel = new Reservacion()
@@ -164,8 +164,98 @@ function agregarPrecio(req,res){
     })
 }
 
-function vaciarReservacion(idUsuario){
+function agregarFactura(req,res){
+    let idUsuario = req.user.sub 
+    let facturaModel = new Factura()
 
+    Reservacion.findOne({usuario:idUsuario},(err, reservacionEncontrada)=> {
+        if (err) res.status(500).send({mensaje: 'Error al hacer la peticion'})
+        if (!reservacionEncontrada) res.status(500).send({mensaje: 'Reservacion no encontrada'})
+
+
+            facturaModel.idHabitacion = reservacionEncontrada.idHabitacion,
+            facturaModel.servicios = reservacionEncontrada.servicios,
+            facturaModel.checkIn = reservacionEncontrada.checkIn,
+            facturaModel.checkOut = reservacionEncontrada.checkOut,
+            facturaModel.precio = reservacionEncontrada.precio,
+            facturaModel.noches = reservacionEncontrada.noches,
+            facturaModel.usuario = reservacionEncontrada.usuario,
+            facturaModel.nombrePersona = reservacionEncontrada.nombrePersona,
+            facturaModel.apellidoPersona = reservacionEncontrada.apellidoPersona,
+            facturaModel.correoPersona = reservacionEncontrada.correoPersona,
+            facturaModel.telefonoPersona = reservacionEncontrada.telefonoPersona,
+            facturaModel.nombreTarjeta = reservacionEncontrada.nombreTarjeta,
+            facturaModel.exp = reservacionEncontrada.exp,
+            facturaModel.cvv = reservacionEncontrada.cvv,
+            facturaModel.fecha = reservacionEncontrada.fecha,
+            facturaModel.total = reservacionEncontrada.total
+
+        facturaModel.save((err, facturaGuardada )=> { 
+            if (err) res.status(500).send({mensaje: 'Error al hacer la peticion'})
+            if (!facturaGuardada) res.status(500).send({mensaje: 'Factura no se agregó'})
+
+            Reservacion.findOneAndUpdate({usuario:idUsuario},
+                {$set:{checkIn : new Date(),
+                checkOut : new Date(),
+                precio : 0,
+                noches : 0,
+                servicios: [],
+                usuario : idUsuario,
+                nombrePersona : '',
+                apellidoPersona :  '',
+                correoPersona :  '',
+                telefonoPersona :  '',
+                nombreTarjeta : '',
+                numeroTarjetoa : '',
+                exp :  '',
+                cvv :  '',
+                fecha :  new Date(),
+                total :  0}},
+                {new:true, useFindAndModify: false},(err, reservacionActualizada)=> {
+                    if (err) res.status(500).send({mensaje: 'Error al hacer la peticion'})
+                    if (!reservacionActualizada) res.status(500).send({mensaje: 'Reservacion Actualizada'})
+            })
+            return res.status(200).send({facturaGuardada})
+        })
+    })
+}
+
+function obtenerFacturasUsuario(req,res){
+    let idUsuario = req.user.sub
+
+    Factura.find({usuario: idUsuario}).populate('idHabitacion','nombre hotel, _id').exec((err, facturasEncontradas) => {
+        if (err) res.status(500).send({mensaje:'Error en la peticion de facturas'})
+        if (!facturasEncontradas) res.status(500).send({mensaje:'No se encontraron factuas'})
+        
+        return res.status(200).send({facturasEncontradas})
+    })
+}
+
+
+
+function obtenerServiciosFactura(req,res){
+    let idUsuario = req.user.sub
+
+    Factura.findOne({usuario:idUsuario},(err, facturaServicio) => {
+        if (err) return res.status(500).send({mensaje:'Error al hacer la peticion a reservacion'})
+        if (!facturaServicio) return res.status(500).send({mensaje:'Aun no hay servicios'})
+
+        return res.status(200).send({facturaServicio})
+    })
+}
+
+function obtenerHotelHabitacion(req,res){
+    let idHabitacion = req.params.idHabitacion
+    Habitacion.findOne({_id: idHabitacion},(err,habitacionEncontrada)=>{
+        if (err) return res.status(500).send({mensaje:'Error al hacer la peticion a reservacion'})
+        if (!habitacionEncontrada) return res.status(500).send({mensaje:'Aun no hay habitaciones'})
+        Hotel.findOne({_id: habitacionEncontrada.hotel},(err, hotelEncontrado)=>{
+            if (err) return res.status(500).send({mensaje:'Error al hacer la peticion a reservacion'})
+            if (!hotelEncontrado) return res.status(500).send({mensaje:'Error al traer Hoteles'})
+
+            return res.status(200).send({hotelEncontrado})
+        })
+    })
 }
 
 module.exports = {
@@ -175,5 +265,9 @@ module.exports = {
     obtenerServiciosReservacion,
     eliminarServicioReservacion,
     actualizarTotal,
-    agregarPrecio
+    agregarPrecio,
+    agregarFactura,
+    obtenerFacturasUsuario,
+    obtenerServiciosFactura,
+    obtenerHotelHabitacion
 }

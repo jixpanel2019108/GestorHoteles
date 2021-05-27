@@ -3,6 +3,8 @@ const Usuario = require('../models/usuarioModel');
 const Reservacion = require('../models/reservacionModel')
 const bcrypt = require('bcrypt-nodejs');
 const jwt = require('../services/jwt');
+const Factura = require('../models/facturaModel')
+
 const reservacionModel = require('../models/reservacionModel');
 
 function registrarUsuario(req, res) {
@@ -21,6 +23,7 @@ function registrarUsuario(req, res) {
         usuarioModel.telefono = params.telefono;
         usuarioModel.pais = params.pais;
         usuarioModel.ciudad = params.ciudad;
+        usuarioModel.imagen = params.imagen;
 
         Usuario.findOne({ usuario: params.usuario }, (err, usuarioUsuario) => {
             if (err) return res.status(500).send({ mensaje: 'Error al verificar usuario' })
@@ -40,6 +43,7 @@ function registrarUsuario(req, res) {
 
                             if (usuarioGuardado) {
                                 crearReservacion(usuarioGuardado._id)
+                                crearFactura(usuarioGuardado._id)
                                 res.status(200).send(usuarioGuardado)
                             } else {
                                 res.status(500).send({ mensaje: 'No se ha podido registrar el usuario' })
@@ -75,6 +79,27 @@ function crearReservacion(idUsuario){
     reservacionModel.save()
 }
 
+function crearFactura(idUsuario){
+    let facturaModel = new Factura()
+    facturaModel.checkIn = new Date()
+    facturaModel.checkOut = new Date()
+    facturaModel.precio = 0
+    facturaModel.noches = 0
+    facturaModel.servicios= [],
+    facturaModel.usuario = idUsuario
+    facturaModel.nombrePersona = ''
+    facturaModel.apellidoPersona =  ''
+    facturaModel.correoPersona =  ''
+    facturaModel.telefonoPersona =  ''
+    facturaModel.nombreTarjeta = ''
+    facturaModel.numeroTarjetoa = ''
+    facturaModel.exp =  ''
+    facturaModel.cvv =  ''
+    facturaModel.fecha =  new Date()
+    facturaModel.total =  0
+    facturaModel.save()
+}
+
 function login(req, res) {
     var params = req.body;
     Usuario.findOne({ usuario: params.usuario }, (err, usuarioEncontrado) => {
@@ -102,10 +127,6 @@ function editarUsuario(req, res) {
     var params = req.body
     delete params.password
 
-    if (params.usuario == '' || params.nombre == '' || params.apellido == '' || params.nacimiento == '' ||
-        params.direccion == '' || params.pais == '' || params.ciudad == '') {
-        return res.status(500).send({ mensaje: 'Tiene que rellenar todos los campos' })
-    }
     Usuario.findOneAndUpdate({ _id: req.user.sub }, {
         usuario: params.usuario,
         nombre: params.nombre,
