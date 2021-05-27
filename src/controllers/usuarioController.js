@@ -137,7 +137,16 @@ function editarUsuario(req, res) {
         ciudad: params.ciudad,
     }, { new: true, useFindAndModify: false }, (err, usuarioActualizado) => {
         if (err) return res.status(500).send({ mensaje: 'Error al actualizar usuario' })
-        return res.status(500).send({ usuarioActualizado })
+        return res.status(200).send({ usuarioActualizado })
+    })
+}
+
+function obtenerUsuarioIdUsuario(req,res){
+    Usuario.findOne({_id:req.user.sub},(err,usuarioEncontrado) => {
+        if (err) return res.status(500).send({ mensaje: 'Error al obtener usuario' })
+        if (!usuarioEncontrado) return res.status(500).send({ mensaje: 'Error al obtener usuario vacio' })
+
+        return res.status(200).send({usuarioEncontrado})
     })
 }
 
@@ -256,5 +265,6 @@ module.exports = {
     adminObtenerUsuario,
     obtenerUsuarioId,
     adminEditarUsuario,
-    adminEliminarUsuario
+    adminEliminarUsuario,
+    obtenerUsuarioIdUsuario
 }

@@ -16,5 +16,6 @@ api.get('/adminObtenerUsuario', md_autenticacion.ensureAuth, usuarioController.a
 api.get('/obtenerUsuarioId/:idUsuario', usuarioController.obtenerUsuarioId)
 api.put('/adminEditarUsuario/:idUsuario', md_autenticacion.ensureAuth, usuarioController.adminEditarUsuario);
 api.delete('/adminEliminarUsuario/:idUsuario', md_autenticacion.ensureAuth, usuarioController.adminEliminarUsuario)
+api.get('/obtenerUsuarioIdUsuario',md_autenticacion.ensureAuth,usuarioController.obtenerUsuarioIdUsuario)
 
 module.exports = api
